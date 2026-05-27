@@ -34,15 +34,16 @@ public class App {
                 option = JOptionPane.showInputDialog(menu);
                 int optionInteger = Integer.parseInt(option);
 
+                if (option == null){
+                    JOptionPane.showMessageDialog(null, "Programa Encerrado");
+                    break;
+                }
+
                 if (optionInteger > 10 || optionInteger < 1){
                     JOptionPane.showMessageDialog(null, "Opção Invalida","Erro", JOptionPane.ERROR_MESSAGE);
                     continue;
                 }
 
-                if (option == null){
-                    JOptionPane.showMessageDialog(null, "Programa Encerrado");
-                    break;
-                }
 
                 switch (optionInteger) {
 
@@ -91,13 +92,37 @@ public class App {
                         break;
                     
                     case 2:
-                        
+
+                        try {
+
+                            if (totalProdutos == 0){
+                                JOptionPane.showMessageDialog(null, "Nenhum produto cadastrado ainda");
+                                
+                            }
+
+                            String relatorio = "=== RELATÓRIO DE PRODUTOS EM ESTOQUE ===\n\n";
+                            
+
+                            for (int i = 0; i < totalProdutos; i++) {
+                                relatorio += "Codigo: " + codigos[0] + " Nome: " + nomes[0] + " Preço: R$" + precos[0] + " Quantidade: " + quantidades[0];
+                            }
+
+                            JOptionPane.showMessageDialog(null, relatorio, "Relatorio Produtos", JOptionPane.INFORMATION_MESSAGE);
+                        }
+
+                        catch (Exception e ){
+                            JOptionPane.showMessageDialog(null, "Erro");
+                        }
+                    
+                    case 10:
+                        break;
+
                 }
 
-                
-                System.out.println(codigos[0] + " || " + nomes[0] + " || " + precos[0] + " || " + quantidades[0] );
-                
+                JOptionPane.showMessageDialog(null, "Sistema Encerrado");
                 break;
+
+            
             }
 
             catch (NumberFormatException e ){
