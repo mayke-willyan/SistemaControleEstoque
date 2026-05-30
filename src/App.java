@@ -13,6 +13,7 @@ public class App {
         String option;
         int totalProdutos = 0;
         int proxCodigo = 1;
+        int optionInteger = 0;
 
         // Texto do Menu Principal
         String menu = "=== SISTEMA DE CONTROLE DE ESTOQUE ===\n\n" +
@@ -38,7 +39,7 @@ public class App {
                     break;
                 }
 
-                int optionInteger = Integer.parseInt(option);
+                optionInteger = Integer.parseInt(option);
 
                 if (optionInteger > 10 || optionInteger < 1) {
                     JOptionPane.showMessageDialog(null, "Opção Inválida", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -82,7 +83,7 @@ public class App {
                             proxCodigo++;
 
                         } catch (NumberFormatException e) {
-                            JOptionPane.showMessageDialog(null, "Preço inválido! Digite apenas números e use pontos para centavos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Preço inválido! Digite apenas números e use pontos para centavos.", "Erro de Formatação", JOptionPane.ERROR_MESSAGE);
                         }
                         break; 
 
@@ -101,8 +102,8 @@ public class App {
 
                             JOptionPane.showMessageDialog(null, relatorio, "Relatório Produtos", JOptionPane.INFORMATION_MESSAGE);
 
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Erro ao gerar o relatório.", "Erro", JOptionPane.ERROR_MESSAGE);
+                        } catch (NullPointerException e) {
+                            JOptionPane.showMessageDialog(null, "Erro interno: Uma das listas de produtos não foi inicializada corretamente.", "Erro de Sistema", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     
@@ -133,8 +134,8 @@ public class App {
                                 JOptionPane.showMessageDialog(null, "Nenhum produto com esse nome encontrado");
                             }
 
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Erro", "Erro", JOptionPane.ERROR_MESSAGE);
+                        } catch (NullPointerException e) {
+                            JOptionPane.showMessageDialog(null, "Erro: Falha ao ler os dados do produto ou pesquisa inválida.", "Erro de Dados", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     
@@ -170,8 +171,8 @@ public class App {
 
                             JOptionPane.showMessageDialog(null, resultado);
 
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Erro", "Erro", JOptionPane.ERROR_MESSAGE);
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(null, "Erro de formato: Certifique-se de digitar apenas números inteiros para o código e a quantidade.", "Erro de Digitação", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     
@@ -212,8 +213,8 @@ public class App {
 
                             JOptionPane.showMessageDialog(null, resultado);
 
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Erro");
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(null, "Erro de formato: Digite apenas números inteiros para código e quantidade da venda.", "Erro de Digitação", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     
@@ -240,18 +241,10 @@ public class App {
                             if (quantidades.get(index) != 0) {
                                 JOptionPane.showMessageDialog(null, "AÇÃO PROIBIDA: Não é possível excluir produtos com estoque. Quantidade atual: " + quantidades.get(index));
                             } else {
-                                String confirmacao = JOptionPane.showInputDialog("Tem certeza que deseja excluir o produto " + nomes.get(index) + " [1 - sim | 0 - não]");
-                                if (confirmacao == null) {
-                                    break;
-                                }
                                 
-                                int confirmacaoCasted = Integer.parseInt(confirmacao);
-
-                                if (confirmacaoCasted < 0 || confirmacaoCasted > 1) {
-                                    JOptionPane.showMessageDialog(null, "Opção inválida");
-                                }
-
-                                if (confirmacaoCasted == 1) {
+                                int confirmacao = JOptionPane.showConfirmDialog(null,"Tem certeza que deseja excluir o produto?", "Exclusão", JOptionPane.YES_NO_OPTION);
+                               
+                                if (confirmacao == JOptionPane.YES_OPTION) {
                                     codigos.remove(index);
                                     nomes.remove(index);
                                     precos.remove(index);
@@ -264,7 +257,7 @@ public class App {
                             }
 
                         } catch (NumberFormatException e) {
-                            JOptionPane.showMessageDialog(null, "Digite apenas números para códigos");
+                            JOptionPane.showMessageDialog(null, "Digite apenas números inteiros para códigos", "Erro de Formatação", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
 
@@ -286,8 +279,8 @@ public class App {
 
                             JOptionPane.showMessageDialog(null, resultado);
                         } 
-                        catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Erro");
+                        catch (IndexOutOfBoundsException e) {
+                            JOptionPane.showMessageDialog(null, "Erro interno: Inconsistência no tamanho das listas de estoque.", "Erro de Índice", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     
@@ -303,8 +296,8 @@ public class App {
                             resultado += String.format("O valor total do estoque somado é de: R$ %.2f", soma);
                             JOptionPane.showMessageDialog(null, resultado);
                         } 
-                        catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Erro");
+                        catch (NullPointerException e) {
+                            JOptionPane.showMessageDialog(null, "Erro: Dados nulos encontrados ao calcular valores.", "Erro de Cálculo", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
 
@@ -343,15 +336,18 @@ public class App {
                             resultado += String.format("SUCESSO: O preço do produto %s foi atualizado para R$ %.2f", nomes.get(index), novoPrecoParsed);
 
                             JOptionPane.showMessageDialog(null, resultado);
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Erro ao atualizar o preço.");
+
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(null, "Erro de formato: Digite um preço válido utilizando apenas números e ponto para os centavos.", "Erro de Digitação", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
 
                     case 10: // SAIR
                         JOptionPane.showMessageDialog(null, "Obrigado por utilizar o sistema de estoque. Até logo!", "Despedida", JOptionPane.INFORMATION_MESSAGE);
-                        break;
+                        return;
                 }
+
+
 
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Erro: digite apenas números inteiros para escolher a opção do menu.", "Erro", JOptionPane.ERROR_MESSAGE);
